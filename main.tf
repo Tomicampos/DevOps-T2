@@ -31,7 +31,7 @@ resource "aws_instance" "COMPRAS_dev_instance" {
   ami                    = "ami-0c101f26f147fa7fd"
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.instance_security_group.id]
-  key_name = "vockey"
+  key_name = "Casonegocio"
 
 
   tags = {
