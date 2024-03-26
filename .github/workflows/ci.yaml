@@ -1,0 +1,33 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_dev:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Install SSH
+        run: sudo apt-get install openssh-client
+      
+      - name: Install packages on EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user 
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo yum install -y nodejs npm git
+            sudo mkdir -p /home/ec2-user
+            sudo rm -rf dirwork
+            sudo git clone https://${{ secrets.GH_TOKEN }}@github.com/Tomicampos/DevOps-T2 /home/ec2-user
+            cd /home/ec2-user
+            sudo npm install -g express pm2
+            sudo pm2 start app.js
+            sudo pm2 status
