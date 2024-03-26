@@ -1,0 +1,73 @@
+name: CI Pipeline - DEV
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install required packages
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ec2-user
+          key: ${{ secrets.AWS_PEM }}
+          script: |
+            sudo yum install -y nodejs npm git
+
+      - name: Create working directory
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ec2-user
+          key: ${{ secrets.AWS_PEM }}
+          script: |
+            sudo rm -rf dirwork || true
+            sudo mkdir -p /home/ec2-user/Directoriodetrabajo
+            sudo chown -R ec2-user:ec2-user /home/ec2-user/Directoriodetrabajo
+
+      - name: Clone repository
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ec2-user
+          key: ${{ secrets.AWS_PEM }}
+          script: |
+            sudo git clone https://${{ secrets.GH_TOKEN }}@github.com/Tomicampos/DevOps-T2 /home/ec2-user
+
+      - name: Install npm packages
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ec2-user
+          key: ${{ secrets.AWS_PEM }}
+          script: |
+            sudo npm install -g express pm2
+            cd /home/ec2-user
+            npm install
+
+      - name: Start service with PM2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ec2-user
+          key: ${{ secrets.AWS_PEM }}
+          script: |
+            cd /home/ec2-user
+            pm2 start app.js
+
+      - name: Check if service is running
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ec2-user
+          key: ${{ secrets.AWS_PEM }}
+          script: |
+            pm2 status
