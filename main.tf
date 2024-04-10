@@ -35,7 +35,7 @@ resource "aws_security_group" "instance_security_group" {
   }
 }
 
-resource "aws_instance" "COMPRAS_QAs_instance" {
+resource "aws_instance" "COMPRAS_QA_instance" {
   ami                    = "ami-0c101f26f147fa7fd"
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.instance_security_group.id]
