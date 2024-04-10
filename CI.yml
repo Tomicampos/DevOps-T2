@@ -23,7 +23,6 @@ jobs:
         docker push tomicampos22/mapainteractivo:latest
 
     - name: Deploy to QA
-      if: github.event_name == 'workflow_dispatch'
       run: |
         ssh ec2-user@3.92.191.164 docker pull tomicampos22/mapainteractivo:latest 
         
