@@ -35,7 +35,7 @@ resource "aws_security_group" "instance_security_group" {
   }
 }
 
-resource "aws_instance" "COMPRAS_QA_instance" {
+resource "aws_instance" "COMPRAS_QAs_instance" {
   ami                    = "ami-051f8a213df8bc089"
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.instance_security_group.id]
@@ -47,7 +47,7 @@ resource "aws_instance" "COMPRAS_QA_instance" {
 }
 
 output "public_ip_dev" {
-  value = aws_instance.COMPRAS_QA_instance.public_ip
+  value = aws_instance.COMPRAS_QAs_instance.public_ip
 }
 
 env:
