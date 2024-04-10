@@ -1,0 +1,35 @@
+
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - Compras-QA
+
+jobs:
+  build:
+    runs-on: Amazon Linux 
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build Docker image
+      run: |
+        docker build -t tomicampos22/mapainteractivo:latest .
+        docker push tomicampos22/mapainteractivo:latest
+
+    - name: Deploy to QA
+      if: github.event_name == 'workflow_dispatch'
+      run: |
+        ssh ec2-user@3.92.191.164 docker pull tomicampos22/mapainteractivo:latest 
+        
+
+    - name: Verify service
+      run: |
+       sudo systemctl status nginx
+       sudo systemctl status apache2
+       docker ps
