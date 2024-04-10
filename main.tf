@@ -36,7 +36,7 @@ resource "aws_security_group" "instance_security_group" {
 }
 
 resource "aws_instance" "COMPRAS_QA_instance" {
-  ami                    = "ami-0c101f26f147fa7fd"
+  ami                    = "ami-051f8a213df8bc089"
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.instance_security_group.id]
   key_name               = "Casonegocio"  
